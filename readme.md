@@ -9,3 +9,4 @@ A Python commandline interface tool for opening, editing, and saving changes to 
 
 # Todo
 - Add feature needs to be expanded to be able to add dictionaries, integers, etc in addition to strings
+- New ability to extract a level and all its children into its own dictionary that can be managed and saved on its own
