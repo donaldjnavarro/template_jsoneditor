@@ -87,8 +87,23 @@ class prompt(cmd.Cmd):
         """Go back one level from your current location"""
         global here
         here.pop()
-        print("Back to "+locationString(here))
+        if here:
+            destination = locationString(here)
+        else:
+            destination = "the top of the JSON"
+        print("Back to "+destination)
         printDict(locationValue(jsonWip, here))
+
+    def do_add(self, arg):
+        """Add a value to the current key. Warning this overwrites the current key value."""
+        global here, jsonWip
+        dictInsertion(jsonWip, here, arg)
+        print("Added",arg,"as the value for",locationString(here))
+
+def dictInsertion(dataDict, mapList, value): 
+    """Add a value to mapList nested key within dataDict"""
+    for k in mapList[:-1]: dataDict = dataDict[k]
+    dataDict[mapList[-1]] = value
 
 def printDict(toPrint):
     """Print a dictionary with indents"""
