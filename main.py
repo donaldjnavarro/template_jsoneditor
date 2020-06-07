@@ -106,13 +106,39 @@ class prompt(cmd.Cmd):
     def do_add(self, arg):
         """Add a value to the current key. Warning this overwrites the current key value"""
         global here, jsonWip
-        dictInsertion(jsonWip, here, arg)
-        print("Added",arg,"as the value for",locationString(here))
+        if dictInsertion(jsonWip, here, arg):
+            print("Added",arg,"as the value for",locationString(here))
+        else:
+            print("No key selected. Use go to select a key.")
+
+    def do_clipboard(self, arg):
+        """Display the contents of the clipboard"""
+        global clipboard
+        try:
+            printDict(clipboard)
+        except:
+            print("Nothing in the clipboard. Use the copy command to capture a key value to the clipboard")
+
+    def do_copy(self, arg):
+        """Store the value of the current key for use with the paste command"""
+        global clipboard
+        clipboard = locationValue(jsonWip, here)
+        printDict(clipboard)
+
+    def do_paste(self, arg):
+        """Insert the contents of the clipboard into the current key"""
+        global clipboard
+        self.do_add(clipboard)
 
 def dictInsertion(dataDict, mapList, value): 
     """Add a value to mapList nested key within dataDict"""
-    for k in mapList[:-1]: dataDict = dataDict[k]
-    dataDict[mapList[-1]] = value
+    if mapList:
+        for k in mapList[:-1]: dataDict = dataDict[k]
+        dataDict[mapList[-1]] = value
+    else:
+        # Probably no key has been selected. Can't add a value to the top level without a key
+        return False 
+
 
 def printDict(toPrint):
     """Print a dictionary with indents"""
