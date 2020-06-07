@@ -108,8 +108,6 @@ class prompt(cmd.Cmd):
         global here, jsonWip
         if dictInsertion(jsonWip, here, arg):
             print("Added",arg,"as the value for",locationString(here))
-        else:
-            print("No key selected. Use go to select a key.")
 
     def do_clipboard(self, arg):
         """Display the contents of the clipboard"""
@@ -130,15 +128,27 @@ class prompt(cmd.Cmd):
         global clipboard
         self.do_add(clipboard)
 
+    def do_create(self, arg):
+        """Create a new key within the current key"""
+        new = {arg : {}}
+        print("Creating a new key",new)
+        self.do_add(new)
+
 def dictInsertion(dataDict, mapList, value): 
     """Add a value to mapList nested key within dataDict"""
-    if mapList:
+    if not mapList:
+        if type(value) != dict:
+            print("You need to navigate into a key to insert a value that is not a dictionary")
+            return False
+        else: # if we aren't in any keys, then we are inserting in the top level
+            # dont use mapList at all
+            global jsonWip
+            jsonWip = value if dataDict == jsonWip else print("ERROR") # Making assumptions about jsonWip being what we are editing. Futureproof risk
+            return True
+    else:
         for k in mapList[:-1]: dataDict = dataDict[k]
         dataDict[mapList[-1]] = value
-    else:
-        # Probably no key has been selected. Can't add a value to the top level without a key
-        return False 
-
+        return True
 
 def printDict(toPrint):
     """Print a dictionary with indents"""
