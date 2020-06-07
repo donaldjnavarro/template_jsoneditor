@@ -62,19 +62,28 @@ class prompt(cmd.Cmd):
             return False
 
     def do_clear(self, arg):
-        """End the current jsonWip and restart from scratch."""
+        """End the current jsonWip and restart from scratch"""
         print("You purge your current work, and save nothing further.")
         return True
 
     def do_look(self, arg):
+        """Display the current level of the JSON and everything deeper"""
         global here
         printHere()
         if not arg:
-            # Display the full JSON currently in progress
+            print("Full value here:")
             if not here:
+                # Display the full JSON currently in progress
                 printDict(jsonWip)
             else:
+                # Display the value of the here key
                 printDict(locationValue(jsonWip, here))
+
+    def do_list(self, arg):
+        """Display the available keys in the current level of the JSON"""
+        printHere()
+        print("Keys available:")
+        for key in locationValue(jsonWip, here): print(key)
 
     def do_go(self, arg):
         """Navigate into one of the keys in the current level you are viewing of the JSON"""
@@ -95,7 +104,7 @@ class prompt(cmd.Cmd):
         printDict(locationValue(jsonWip, here))
 
     def do_add(self, arg):
-        """Add a value to the current key. Warning this overwrites the current key value."""
+        """Add a value to the current key. Warning this overwrites the current key value"""
         global here, jsonWip
         dictInsertion(jsonWip, here, arg)
         print("Added",arg,"as the value for",locationString(here))
